@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { dummyAdminDashboardData} from "../assets/assets"
+import { dummyAdminDashboardData, dummyEmployeeDashboardData} from "../assets/assets"
 import Loading from "../components/Loading"
 import EmployeeDashboard from "../components/EmployeeDashboard"
 import AdminDashboard from "../components/AdminDashboard"
@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [data, setData] = useState(null)
  const[loading,setLoading] = useState(true)
  useEffect(()=>{
-   setData(dummyAdminDashboardData)
+   setData(dummyEmployeeDashboardData)
    setTimeout(()=>{
     setLoading(false)
    },1000)
