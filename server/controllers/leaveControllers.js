@@ -47,7 +47,7 @@ export const createLeave = async(req,res)=>{
 export const getLeave = async(req,res)=>{
      try {
         const session = req.session
-        const isAdmin = session.role === "ADMIN",
+        const isAdmin = session.role === "ADMIN"
         if(isAdmin){
             const status = req.status;
             const where=status ? {status}:{};
