@@ -7,6 +7,6 @@ import { protect } from "../middleware/auth.js";
 
 authRouter.post("/login",login)
 authRouter.get("/session",protect,session)
-authRouter.past("/changer-password",protect,changePassword)
+authRouter.post("/changer-password",protect,changePassword)
  
 export default authRouter
