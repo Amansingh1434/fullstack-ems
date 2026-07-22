@@ -9,19 +9,19 @@ const EmployeeDashboard = ({data}) => {
             icon:CalendarIcon,
             value:data.currentMonthAttendance,
             title:"Days Present",
-            suntitle:"This Month"
+            subtitle:"This Month"
         },
         {
             icon:FileTextIcon,
             value:data.pendingLeaves,
             title:"Pending Leaves",
-            suntitle:"Awaiying approval"
+            subtitle:"Awaiting approval"
         },
         {
             icon:DollarSignIcon,
             value:data.latestPayslip ? `$${data.latestPayslip.netSalary?.toLocaleString()}`:"N/A",
             title:"Latest Payslip",
-            suntitle:"Most recant payout"
+            subtitle:"Most recent payout"
         },
 
     ] 
@@ -29,7 +29,7 @@ const EmployeeDashboard = ({data}) => {
     <div className=' animate-fade-in'>
     <div className=' page-header'>
         <h1 className='page-title'>Welcome, {emp?.firstName}!</h1>
-        <p className=' page-subtitle'> {emp.position} - {emp?.department|| "No Department"}</p>
+        <p className=' page-subtitle'> {emp?.position} - {emp?.department|| "No Department"}</p>
     </div>
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-8">
         {

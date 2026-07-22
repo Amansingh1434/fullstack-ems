@@ -1,12 +1,21 @@
 import { Check, Loader2, X } from 'lucide-react'
 import React, { useState } from 'react'
 import { format } from 'date-fns'
+import api from '../../api/axios'
+import toast from 'react-hot-toast'
 
-const leaveHistory = ({leaves,isAdmin,onUpdate}) => {
+const LeaveHistory = ({leaves,isAdmin,onUpdate}) => {
     const [processing , setProcessing] = useState(null)
     const handleStatusUpdate = async(id,status)=>{
         setProcessing(id)
-
+      try {
+        await api.patch(`/leave/${id}`,{status})
+        onUpdate()
+      } catch (error) {
+        toast.error(error?.response?.data?.error|| error?.message)
+      }finally{
+        setProcessing(null)
+      }
     }
   return (
      <div className="card overflow-hidden">
@@ -28,7 +37,7 @@ const leaveHistory = ({leaves,isAdmin,onUpdate}) => {
                 {leaves.length === 0 ? (
                   <tr>
                     <td colSpan={isAdmin ? 6 : 4} className="text-center py-12 text-slate-400">
-                      No leave application found
+                     No leave applications found
                     </td>
                   </tr>
                 ) : (
@@ -39,7 +48,7 @@ const leaveHistory = ({leaves,isAdmin,onUpdate}) => {
                       {isAdmin&&(
                         <td className=" text-slate-900">
                           {leave.employee?.firstName}
-                          {leave.employee?.laseName}
+                          {leave.employee?.lastName}
                           
                         </td>
                       )}
@@ -53,7 +62,7 @@ const leaveHistory = ({leaves,isAdmin,onUpdate}) => {
                         {leave.reason}
                         </td>
                         <td>
-                        <span className={`badge ${leave.status==="APPROVED"?"badge-success":leave.status==="REJECTED"?"badge-warning":"badge-danger"}`}>{leave.status}</span>
+                        <span className={`badge ${leave.status==="APPROVED"?"badge-success":leave.status==="REJECTED"?"badge-danger":"badge-danger"}`}>{leave.status}</span>
                         </td>
                         {isAdmin&&(
                         <td>
@@ -85,4 +94,4 @@ const leaveHistory = ({leaves,isAdmin,onUpdate}) => {
   )
 }
 
-export default leaveHistory
+export default LeaveHistory

@@ -1,12 +1,28 @@
 import { Loader2, Save, User } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../api/axios'
 
-const ProfileForm = ({initalData,onSuccess}) => {
+const ProfileForm = ({initialData,onSuccess}) => {
     const [loading,setLoading]=useState(false)
     const [error,setError]=useState("")
     const [message,setMessage]=useState("")
     const handleSubmit = async (e)=>{
         e.preventDefault();
+        setLoading(true)
+        setError("")
+        setMessage("")
+        const formData = new FormData(e.currentTarget)
+        try {
+          // await api.post("/profile",formData)
+          await api.post("/profile", formData);
+          setMessage("Profile updated successfully")
+          onSuccess?.()
+        } catch (error) {
+          // setError.error(error.response?.data?.error || error.message)
+          // setError.error(error.response?.data?.error || error.message)
+        }finally{
+          setLoading(false)
+        }
     }
   return (
     <form className='card p-5 sm:p-6 mb-6' onSubmit={handleSubmit}>
@@ -34,25 +50,25 @@ const ProfileForm = ({initalData,onSuccess}) => {
     <div className=' grid grid-cols-1 sm:grid-cols-2 gap-4'>
         <div>
             <label className=' block text-sm font-medium text-slate-700'>Name</label>
-            <input disabled value={`${initalData.firstName} ${initalData.lastName}`} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
+            <input disabled value={`${initialData.firstName} ${initialData.lastName}`} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
         </div>
         <div>
             <label className=' block text-sm font-medium text-slate-700'>Email</label>
-            <input disabled value={initalData.email} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
+            <input disabled value={initialData.email} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
         </div>
         <div className=' sm:col-span-2'>
             <label className=' block text-sm font-medium text-slate-700'>Position</label>
-            <input disabled value={initalData.position} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
+            <input disabled value={initialData.position} className=' bg-slate-50 text-slate-400 cursor-not-allowed'/>
         </div>
     </div>
     <div>
         <label className=' block text-sm font-medium text-slate-700 mb-2'>
           Bio
         </label>
-        <textarea disabled={initalData.isDeleted} name='bio' defaultValue={initalData.bio || ""} placeholder='Write a brief bio...' className={` resize-none ${initalData.isDeleted ? " bg-slate-50 text-slate-400 cursor-not-allowed":""}`}/>
+        <textarea disabled={initialData.isDeleted} name='bio' defaultValue={initialData.bio || ""} placeholder='Write a brief bio...' className={` resize-none ${initialData.isDeleted ? " bg-slate-50 text-slate-400 cursor-not-allowed":""}`}/>
         <p className=' text-xs text-slate-400 mt-1.5'>This will be displayed on your profile</p>
     </div>
-    {initalData.isDeleted ? (
+    {initialData.isDeleted ? (
         <div className=' pt-2'>
             <div className=' p-4 bg-rose-50 border border-rose-200 rounded-xl text-center '>
                 <p className=' text-rose-600 font-medium tracking-tight '>Account Deactivated</p>

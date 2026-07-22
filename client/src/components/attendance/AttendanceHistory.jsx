@@ -2,8 +2,6 @@ import { getDayTypeDisplay, getWorkingHoursDisplay } from "../../assets/assets";
 import {format}  from 'date-fns'
 
 const AttendanceHistory = ({history}) => {
-//   const records = Array.isArray(history) ? history : [];
-
   return (
     <div className="card overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100">
