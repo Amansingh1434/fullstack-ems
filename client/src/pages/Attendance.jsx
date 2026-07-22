@@ -4,16 +4,24 @@ import Loading from "../components/Loading"
 import CheckInButton from "../components/attendance/CheckInButton"
 import AttendanceStats from "../components/attendance/AttendanceStats"
 import AttendanceHistory from "../components/attendance/AttendanceHistory"
+import api from "../api/axios"
+import toast from "react-hot-toast"
 
 const Attendance = () => {
-  const [history,sethistory]=useState([])
+  const [history,setHistory]=useState([])
   const [loading,setLoading]=useState(true)
-  const [IsDeleted,setIsDeleted]=useState(false)
+  const [isDeleted,setIsDeleted]=useState(false)
   const fetchData = useCallback(async ()=>{
-    sethistory(dummyAttendanceData)
-    setTimeout(()=>{
+    try {
+      const res = await api.get("/attendance")
+      const json = res.data
+      setHistory(json.data || [])
+      if(json.employee?.isDeleted) setIsDeleted(true)
+    } catch (error) {
+      toast.error(error?.response?.data?.error ||error?.message)
+    }finally{
       setLoading(false)
-    },1000)
+    }
   },[])
 
   useEffect(()=>{
@@ -27,11 +35,11 @@ const Attendance = () => {
     <div className=" animate-fade-in">
        <div className=" page-header">
         <h1 className=" page-title">Attendance</h1>
-        <p className=" page-subtitle">Track your work hours and daile check-ins</p>
+        <p className=" page-subtitle">Track your work hours and daily check-ins</p>
        </div>
-       {IsDeleted ? (
+       {isDeleted ? (
         <div className=" mb-8 p-6 bg-rose-50 border border-rose-200 rounded-2xl text-center">
-       <p className=" text-rose-600"> you can on longer clock in or out because your employee records have been marked as deleted.</p>
+       <p className=" text-rose-600"> You can no longer clock in or out because your employee records have been marked as deleted.</p>
         </div>
        ):(
         <div className=" mb-8">

@@ -1,15 +1,23 @@
 import { PencilIcon, Trash2Icon } from 'lucide-react'
 import React from 'react'
+import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 
 const EmployeeCard = ({employee, onDelete,onEdit}) => {
-  const hendleDelete = async()=>{
+  const handleDelete = async()=>{
     if(!confirm("Are you sure you want to delete this employee"))
       return;
+    try {
+      await api.delete(`/employees/${employee.id}`)
+      onDelete()
+    } catch (error) {
+      toast.error(err.response?.data?.error || err.message)
+    }
   }
   return (
     <div className=' group relative card card-hover overflow-hidden'>
-      <div className=' relative aspect-4/3 w-full overflow-hidden bg-linear-to-br from-slate-100 to-slate-50'>
+      <div className=' relative aspect-[4/3] w-full overflow-hidden bg-linear-to-br from-slate-100 to-slate-50'>
      
         <div className=' w-full h-full flex items-center justify-center'>
         {/* circle icons */}
@@ -19,7 +27,7 @@ const EmployeeCard = ({employee, onDelete,onEdit}) => {
         </div>
       </div>
       <div className=' absolute top-3 left-3 flex gap-2'>
-      <span className=' bg-white/90 backdrop-blur-sm px-2.5 py-1 text-sm font-semibold text-slate-600 rounded-lg shadow-sm '>{employee.department || "Remoye"}</span>
+      <span className=' bg-white/90 backdrop-blur-sm px-2.5 py-1 text-sm font-semibold text-slate-600 rounded-lg shadow-sm '>{employee.department || "Remove"}</span>
       {employee.isDeleted && <span className=' bg-red-500/60 font-medium text-white px-2.5 py-1 text-xs rounded'>DELETED</span>}
       </div>
       {!employee.isDeleted && (
@@ -27,7 +35,7 @@ const EmployeeCard = ({employee, onDelete,onEdit}) => {
         <button onClick={()=>onEdit(employee)} className=' p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-indigo-600 rounded-xl shadow-lg transition-all hover:scale-105'>
           <PencilIcon className=' w-4 h-4'/>
         </button>
-        <button onClick={hendleDelete} className=' p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-rose-600 rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50'>
+        <button onClick={handleDelete} className=' p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-rose-600 rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50'>
           <Trash2Icon className='w-4 h-4'/>
         </button>
 

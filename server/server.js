@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(multer().none())
 
 // Routes
-app.get("/",(req,res)=> res.send("Srever is Running "))
+app.get("/",(req,res)=> res.send("Server is Running "))
 app.use("/api/auth",authRouter)
 app.use("/api/employees",employeesRouter)
 app.use("/api/profile",profileRouter)

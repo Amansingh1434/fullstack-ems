@@ -1,5 +1,7 @@
 import { Loader2, Plus, X } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../../api/axios'
+import toast from 'react-hot-toast'
 
 const GeneratePayslipForm = ({employees,onSuccess}) => {
     const [isOpen,setIsOpen]=useState(false)
@@ -12,12 +14,23 @@ const GeneratePayslipForm = ({employees,onSuccess}) => {
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
+        setLoading(true)
+        const formDate = new FormData(e.currentTarget);
+        const data =  Object.fromEntries(formDate.entries())
+        try {
+            await api.post("/payslips",data)
+            setIsOpen(false)
+            onSuccess()
+        } catch (error) {
+            toast.error(error.response?.data?.error || error.message)
+        }
+        setLoading(false)
     }
   return (
     <div className=' fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
     <div className=' card max-w-lg w-full p-6 animate-slide-up'>
     <div className=' flex justify-between items-center mb-6 '>
-        <h3 className=' text-lg font-bold text-slate-900'>Gemerate Monthly Payslip</h3>
+        <h3 className=' text-lg font-bold text-slate-900'>Generate Monthly Payslip</h3>
         <button onClick={()=>setIsOpen(false)} 
          className=' text-slate-400 hover:text-slate-600 p-1'>
             <X size={20}/>

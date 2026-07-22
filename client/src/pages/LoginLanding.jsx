@@ -1,59 +1,105 @@
-import React from 'react'
-import LoginLeftSide from '../components/LoginLeftSide'
-import {ArrowRightIcon, ShieldIcon, UserIcon} from "lucide-react"
-import { Link } from 'react-router-dom'
+import React from "react";
+import LoginLeftSide from "../components/LoginLeftSide";
+import {
+  ArrowRightIcon,
+  ShieldIcon,
+  UserIcon,
+} from "lucide-react";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Loading from "../components/Loading";
 
 const LoginLanding = () => {
-  const portalOptions=[
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+
+  const portalOptions = [
     {
-      to:"/login/admin",
-      title:"Admin portal",
-      description:"Manage employees departments payrool and system configurations.",
-      icon:ShieldIcon
+      to: "/login/admin",
+      title: "Admin Portal",
+      description:
+        "Manage employees, departments, payroll, and system configurations.",
+      icon: ShieldIcon,
     },
     {
-      to:"/login/employee",
-      title:"Employee portal",
-      description:"View your profile, track attendance, request time off, and access payslips.",
-      icon:UserIcon
-    }
-  ]
+      to: "/login/employee",
+      title: "Employee Portal",
+      description:
+        "View your profile, track attendance, request leave, and access payslips.",
+      icon: UserIcon,
+    },
+  ];
+
   return (
-    <div className=' min-h-screen flex flex-col md:flex-row'>
-       <LoginLeftSide/>
-       <div className=' w-full md:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-y-auto min-h-screen'>
-           
-           <div className=' w-full max-w-md animate-fade-in relative z-10'>
-            {/* header part */}
-            <div className=' mb-10 text-center md:text-left'>
-              <h2 className=' text-3xl font-medium text-slate-900 tracking-tight mb-3'>Welcome back</h2>
-              <p className=' text-slate-500'>Select your portal to securely access the system. </p>
-            </div>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left Side */}
+      <LoginLeftSide />
 
-            {/* Portals List */}
-            <div className=' space-y-4'>
-            {portalOptions.map((portal)=>(
-              <Link key={portal.to} to={portal.to} className=' group block bg-slate-50 border border-slate-200 rounded-lg p-5 sm:p-6 transition-all duration-300 hover:border-indigo-400 hover:bg-indigo-50'>
-                <div className=' relative z-10 flex items-center justify-between gap-4 sm:gap-5'>
-                  <h3 className=' text-lg text-slate-800 group-hover:text-indigo-600 mb-1'>{portal.title}</h3>
-                  <ArrowRightIcon className=' w-4 h-4 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all duration-300'/>
-                </div>
-              </Link>
-            ))
+      {/* Right Side */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-white">
+        <div className="w-full max-w-md animate-fade-in">
+          {/* Header */}
+          <div className="mb-10 text-center md:text-left">
+            <h1 className="text-3xl font-bold text-slate-900 mb-3">
+              Welcome Back
+            </h1>
 
-            }
+            <p className="text-slate-500">
+              Select your portal to securely access the Employee Management
+              System.
+            </p>
+          </div>
 
-            </div>
-            {/* Footer */}
-            <div className=' mt-12 text-center md:text-left text-sm text-slate-400'>
-              <p>© {new Date().getFullYear()} Aman singh. All rights reserves. </p>
-            </div>
-           </div>
+          {/* Portal Cards */}
+          <div className="space-y-4">
+            {portalOptions.map((portal) => {
+              const Icon = portal.icon;
 
+              return (
+                <Link
+                  key={portal.to}
+                  to={portal.to}
+                  className="group flex items-center justify-between p-5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-400 transition-all duration-300 shadow-sm hover:shadow-md"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-lg bg-indigo-100">
+                      <Icon className="w-6 h-6 text-indigo-600" />
+                    </div>
 
-       </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-800 group-hover:text-indigo-600">
+                        {portal.title}
+                      </h3>
+
+                      {/* <p className="text-sm text-slate-500 mt-1">
+                        {portal.description}
+                      </p> */}
+                    </div>
+                  </div>
+
+                  <ArrowRightIcon className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all duration-300" />
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Footer */}
+          <div className="mt-12 text-center md:text-left text-sm text-slate-400">
+            <p>
+              © {new Date().getFullYear()} Aman Singh. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginLanding
+export default LoginLanding;

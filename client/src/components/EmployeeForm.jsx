@@ -2,13 +2,33 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DEPARTMENTS } from '../assets/assets'
 import { Loader2Icon } from 'lucide-react'
+import api from '../api/axios'
+import toast from 'react-hot-toast'
 
 const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
     const navigate = useNavigate()
     const [loading,setLoading]=useState(false)
-    const isEditeMode = !!initialData
+    const isEditMode = !!initialData
+
     const handleSubmit = async(e)=>{
        e.preventDefault()
+       setLoading(true)
+       const formData = new FormData(e.currentTarget);
+       if(isEditMode){
+        const pwd = formData.get("password")
+        if(!pwd) formData.delete("password")
+       }
+    try {
+        const url = isEditMode ? `/employees/${initialData.id}`:"/employees";
+        const method = isEditMode ? "put" : "post"
+        //await api[method](url,formData)
+        await api[method](url, formData)
+        onSuccess ? onSuccess():navigate("/employees")
+    } catch (error) {
+        toast.error(err.response?.data?.error || err.message)
+    }finally{
+        setLoading(false)
+    }
     }
     
     
@@ -16,7 +36,7 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
 
   return (
     <form onSubmit={handleSubmit} className=' space-y-6 max-w-3xl animate-fade-in'>
-        {/* prrsonal information */}
+        {/* Personal Information */}
         <div className=' card p-5 sm:p-6 '>
             <h3 className=' font-medium mb-6 pb-4 border-b border-slate-100'>Personal Information</h3>
             <div className=' grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm text-slate-700'>
@@ -34,7 +54,7 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
                 </div>
                 <div>
                     <label className=' block mb-2'>Join Date</label>
-                    <input type='date' name='jopinDate' required defaultValue={initialData?.joinDate ? new Date(initialData?.joinDate).toISOString().split("T")[0]:""}/>
+                    <input type='date' name="joindate" required defaultValue={initialData?.joinDate ? new Date(initialData?.joinDate).toISOString().split("T")[0]:""}/>
                 </div>
                 <div className=' sm:col-span-2'>
                     <label className=' block mb-2'>Bio(Optional)</label>
@@ -48,7 +68,7 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
             <h3 className=' text-base font-medium text-slate-900 mb-6 pb-4 border-b border-slate-100 '>Employment Details</h3>
             <div className=' grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm text-slate-700'>
                 <div>
-                    <label className=' block mb-2'>Depatment</label>
+                    <label className=' block mb-2'>Department</label>
                     <select name='department' defaultValue={initialData?.department ||""}>
                     <option value="">Select Department</option>
                    
@@ -73,10 +93,10 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
                     <label className=' block mb-2'>Deductions</label>
                     <input type='number' name='deductions' required min="0" step="0.01"  defaultValue={initialData?.deductions || 0}/>
                 </div>
-                {isEditeMode && (
+                {isEditMode && (
                    <div>
                     <label className=' block mb-2'>Status</label>
-                    <select name='employementStatus' defaultValue={initialData?.employementStatus}>
+                    <select name='employmentStatus' defaultValue={initialData?.employmentStatus}>
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
                     </select>
@@ -92,13 +112,13 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
                     <label className=' block mb-2'>Work Email</label>
                     <input type='email' name='email' required defaultValue={initialData?.email}/>
                 </div>
-                {!isEditeMode && (
+                {!isEditMode && (
                    <div>
                     <label className=' block mb-2'>Temporary Password</label>
                     <input type='password' name='password' required />
                 </div> 
                 )}
-                {isEditeMode && (
+                {isEditMode && (
                    <div>
                     <label className=' block mb-2'>Change Password(Optional)</label>
                     <input type='password' name='password' placeholder='Leave blank to keep current'/>
@@ -106,7 +126,7 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
                 )}
                 <div>
                     <label className=' block mb-2'>System Role</label>
-                    <select name='role' defaultValue={initialData?.user?.role||"EMPLOPYEE"}>
+                    <select name='role' defaultValue={initialData?.user?.role||"EMPLOYEE"}>
                      <option value="EMPLOYEE">Employee</option>
                      <option value="ADMIN">ADMIN</option>
                     </select>
@@ -114,14 +134,14 @@ const EmployeeForm = ({initialData,onSuccess,onCancel}) => {
             </div>
 
         </div>
-        {/* Buttom */}
+        {/* Button */}
         <div className=' flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2'>
             <button type='button' className=' btn-secondary' onClick={()=>(onCancel ? onCancel():navigate(-1))}>
                 Cancel
             </button>
             <button type='submit' disabled={loading} className=' btn-primary flex items-center justify-center'>
                 {loading && <Loader2Icon className='w-4 h-4 mr-2 animate-spin'/>}
-                {isEditeMode?"Update Employee":"Create Employee"}
+                {isEditMode?"Update Employee":"Create Employee"}
             </button>
         </div>
     </form>
